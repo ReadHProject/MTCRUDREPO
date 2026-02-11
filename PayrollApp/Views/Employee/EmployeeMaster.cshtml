@@ -1,71 +1,298 @@
 ﻿@model PayrollApp.Models.EmployeeMasterModel
 
 @{
+    ViewBag.Title = "Employee Master";
     Layout = null;
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>EmployeeMaster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Master - Payroll System</title>
+    
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .page-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            border-color: #95a5a6;
+            padding: 10px 25px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .field-validation-error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .alert {
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .info-section {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .breadcrumb-item a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .auto-generated {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+    </style>
 </head>
 <body>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
-    
-    
-    @using (Html.BeginForm()) 
-    {
-        @Html.AntiForgeryToken()
-        
-        <div class="form-horizontal">
-            <h4>EmployeeMasterModel</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.EMPID, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.EMPID, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.EMPID, "", new { @class = "text-danger" })
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="mb-0">Employee Master</h3>
+                    <p class="mb-0">Add New Employee Information</p>
                 </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.EMPNAME, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.EMPNAME, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.EMPNAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.EMPDESIGNATION, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.EMPDESIGNATION, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.EMPDESIGNATION, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.MOBILE, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.MOBILE, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.MOBILE, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                <div class="col-md-4 text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("EmployeeMaster", "Employee")">Employees</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Add New</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
-    }
-    
-    <div>
-        @Html.ActionLink("Back to List", "Index")
     </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                
+                <!-- Success/Error Messages -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> @TempData["SuccessMessage"]
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                }
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Please correct the following errors:</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <!-- Main Form -->
+                <div class="main-card">
+                    <h5 class="mb-4">Employee Information</h5>
+                    
+                    @using (Html.BeginForm("EmployeeMaster", "Employee", FormMethod.Post, new { @class = "employee-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="empId">Employee ID</label>
+                                    <input type="text" class="form-control auto-generated" id="empId" value="Auto Generated" readonly>
+                                    <small class="form-text text-muted">Employee ID will be automatically assigned</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.EMPNAME, "Employee Name", new { @class = "control-label" })
+                                    <span class="required">*</span>
+                                    @Html.TextBoxFor(m => m.EMPNAME, new {@class = "form-control", @placeholder = "Enter full name", @maxlength = "100"})
+                                    @Html.ValidationMessageFor(m => m.EMPNAME, "", new { @class = "field-validation-error" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.EMPDESIGNATION, "Designation", new { @class = "control-label" })
+                                    <span class="required">*</span>
+                                    @Html.TextBoxFor(m => m.EMPDESIGNATION, new {@class = "form-control", @placeholder = "e.g. Software Engineer", @maxlength = "50"})
+                                    @Html.ValidationMessageFor(m => m.EMPDESIGNATION, "", new { @class = "field-validation-error" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.MOBILE, "Mobile Number", new { @class = "control-label" })
+                                    <span class="required">*</span>
+                                    @Html.TextBoxFor(m => m.MOBILE, new {@class = "form-control", @placeholder = "10-digit mobile number", @maxlength = "10", @type = "tel"})
+                                    @Html.ValidationMessageFor(m => m.MOBILE, "", new { @class = "field-validation-error" })
+                                    <small class="form-text text-muted">Enter 10-digit mobile number without country code</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-secondary mr-2" onclick="resetForm()">Clear Form</button>
+                            <button type="submit" class="btn btn-primary">Save Employee</button>
+                        </div>
+                    }
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('.employee-form');
+            const mobileInput = document.getElementById('MOBILE');
+            const fields = ['EMPNAME', 'EMPDESIGNATION', 'MOBILE'];
+
+            // 1. Mobile number validation - only allow digits on keypress
+            mobileInput.addEventListener('keypress', (e) => {
+                if (e.which < 48 || e.which > 57) e.preventDefault();
+            });
+
+            // 2. Real-time validation feedback (Reusable function)
+            const validateField = (input) => {
+                const value = input.value.trim();
+                let isValid = value.length >= 2;
+
+                // Specific check for Mobile
+                if (input.id === 'MOBILE') {
+                    isValid = /^[0-9]{10}$/.test(value);
+                }
+
+                input.classList.toggle('is-invalid', !isValid);
+                input.classList.toggle('is-valid', isValid);
+                return isValid;
+            };
+
+            // Attach blur event to all fields
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('blur', () => validateField(el));
+            });
+
+            // 3. Form Submission
+            form.addEventListener('submit', (e) => {
+                let isFormValid = true;
+
+                fields.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (!validateField(input)) isFormValid = false;
+                });
+
+                if (!isFormValid) {
+                    e.preventDefault();
+                    // Scroll to the first invalid element
+                    document.querySelector('.is-invalid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+
+            // 4. Auto-hide alerts
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => alert.style.display = 'none');
+            }, 5000);
+        });
+
+        // Reset Function
+        function resetForm() {
+            const form = document.querySelector('.employee-form');
+            form.reset();
+            form.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('is-valid', 'is-invalid');
+            });
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,413 @@
+﻿@model PayrollApp.Models.EmployeeDetailsModel
+
+@{
+    ViewBag.Title = "Employee Details";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details - Payroll System</title>
+    
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .page-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            border-color: #95a5a6;
+            padding: 10px 25px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .field-validation-error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .alert {
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .info-section {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .breadcrumb-item a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .auto-generated {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="mb-0">Employee Salary Details</h3>
+                    <p class="mb-0">Add Employee Salary Information</p>
+                </div>
+                <div class="col-md-4 text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("EmployeeMaster", "Employee")">Employee Master</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Salary Details</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <strong>Please correct the following errors:</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Main Form -->
+            <div class="main-card">
+                <h5 class="mb-4">Employee Salary Information</h5>
+
+                @using (Html.BeginForm("EmployeeDetails", "Employee", FormMethod.Post, new { @class = "employee-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.EMPID, "Select Employee", new { @class = "control-label" })
+                                <span class="required">*</span>
+                                @Html.DropDownListFor(m => m.EMPID, (SelectList)ViewBag.EmployeeNamesList, "--Select Employee--", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.EMPID, "", new { @class = "field-validation-error" })
+                                <small class="form-text text-muted">Choose an employee to add salary details</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.BASICSALARY, "Basic Salary", new { @class = "control-label" })
+                                <span class="required">*</span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">₹</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.BASICSALARY, new { @class = "form-control", @placeholder = "e.g. 50000", @step = "0.01", @min = "0.01" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.BASICSALARY, "", new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.HRA, "HRA (House Rent Allowance)", new { @class = "control-label" })
+                                <span class="required">*</span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">₹</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.HRA, new { @class = "form-control", @placeholder = "e.g. 5000", @step = "0.01", @min = "0.01" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.HRA, "", new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.DA, "DA (Dearness Allowance)", new { @class = "control-label" })
+                                <span class="required">*</span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">₹</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.DA, new { @class = "form-control", @placeholder = "e.g. 3000", @step = "0.01", @min = "0.01" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.DA, "", new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.DEDUCTION, "Deduction", new { @class = "control-label" })
+                                <span class="required">*</span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">₹</span>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.DEDUCTION, new { @class = "form-control", @placeholder = "e.g. 2000", @step = "0.01", @min = "0.01" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.DEDUCTION, "", new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Preview Section -->
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Salary Calculation Preview</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Gross Salary:</strong>
+                                            <div class="text-success" id="grossSalary">₹ 0.00</div>
+                                            <small class="text-muted">(Basic + HRA + DA)</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Total Deduction:</strong>
+                                            <div class="text-danger" id="totalDeduction">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Net Salary:</strong>
+                                            <div class="text-primary font-weight-bold" id="netSalary">₹ 0.00</div>
+                                            <small class="text-muted">(Gross - Deduction)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-group text-right">
+                        <a href="@Url.Action("EmployeeMaster", "Employee")" class="btn btn-outline-secondary mr-2">
+                            Back to Employee Master
+                        </a>
+                        <button type="button" class="btn btn-secondary mr-2" onclick="resetForm()">Clear Form</button>
+                        <button type="submit" class="btn btn-primary">Save Salary Details</button>
+                    </div>
+                }
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('.employee-form');
+            const fields = ['EMPID', 'BASICSALARY', 'HRA', 'DA', 'DEDUCTION'];
+            const salaryFields = ['BASICSALARY', 'HRA', 'DA', 'DEDUCTION'];
+
+            // 1. Only allow numbers and decimal points for salary fields
+            salaryFields.forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        const char = String.fromCharCode(e.which);
+                        // Allow numbers, decimal point, backspace, delete, tab, escape, enter
+                        if (!/[0-9.]/.test(char) && [8, 9, 27, 13, 46].indexOf(e.which) === -1) {
+                            e.preventDefault();
+                        }
+                        // Allow only one decimal point
+                        if (char === '.' && input.value.indexOf('.') !== -1) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    // Real-time salary calculation on input
+                    input.addEventListener('input', calculateSalary);
+                }
+            });
+
+            // 2. Real-time salary calculation
+            function calculateSalary() {
+                const basic = parseFloat(document.getElementById('BASICSALARY').value) || 0;
+                const hra = parseFloat(document.getElementById('HRA').value) || 0;
+                const da = parseFloat(document.getElementById('DA').value) || 0;
+                const deduction = parseFloat(document.getElementById('DEDUCTION').value) || 0;
+
+                const gross = basic + hra + da;
+                const net = gross - deduction;
+
+                document.getElementById('grossSalary').textContent = '₹ ' + gross.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalDeduction').textContent = '₹ ' + deduction.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('netSalary').textContent = '₹ ' + net.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+
+            // 3. Real-time validation feedback
+            const validateField = (input) => {
+                const value = input.value.trim();
+                let isValid = false;
+
+                if (input.id === 'EMPID') {
+                    // Dropdown validation - check if a valid option is selected
+                    isValid = value !== '' && value !== '0';
+                } else if (salaryFields.includes(input.id)) {
+                    // Salary field validation - must be positive number
+                    const numValue = parseFloat(value);
+                    isValid = !isNaN(numValue) && numValue > 0;
+                }
+
+                input.classList.toggle('is-invalid', !isValid);
+                input.classList.toggle('is-valid', isValid);
+                return isValid;
+            };
+
+            // 4. Attach blur event to all fields
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('blur', () => validateField(el));
+                    
+                    // For dropdown, also validate on change
+                    if (id === 'EMPID') {
+                        el.addEventListener('change', () => validateField(el));
+                    }
+                }
+            });
+
+            // 5. Form Submission validation
+            form.addEventListener('submit', (e) => {
+                let isFormValid = true;
+
+                fields.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input && !validateField(input)) {
+                        isFormValid = false;
+                    }
+                });
+
+                if (!isFormValid) {
+                    e.preventDefault();
+                    // Scroll to the first invalid element
+                    const firstInvalid = document.querySelector('.is-invalid');
+                    if (firstInvalid) {
+                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstInvalid.focus();
+                    }
+                }
+            });
+
+            // 6. Auto-hide alerts after 5 seconds
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => alert.style.display = 'none');
+            }, 5000);
+
+            // Initial calculation
+            calculateSalary();
+        });
+
+        // Reset Function
+        function resetForm() {
+            const form = document.querySelector('.employee-form');
+            form.reset();
+            form.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('is-valid', 'is-invalid');
+            });
+            // Reset salary calculations
+            document.getElementById('grossSalary').textContent = '₹ 0.00';
+            document.getElementById('totalDeduction').textContent = '₹ 0.00';
+            document.getElementById('netSalary').textContent = '₹ 0.00';
+        }
+    </script>
+</body>
+</html>

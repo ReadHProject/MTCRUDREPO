@@ -14,7 +14,7 @@ namespace PayrollApp.DAL
         // DB CONNECTION STRING
         private static SqlConnection GetConnection()
         {
-            return new SqlConnection(ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString);
+            return new SqlConnection(ConfigurationManager.ConnectionStrings["DBCONSTR"].ConnectionString);
         }
 
         // ATTACH PARAMETERS

@@ -12,16 +12,19 @@ namespace PayrollApp.Models
         public int EMPID { get; set; }
 
         [Required(ErrorMessage = "Basic Salary is required")]
-        [Range(1, 1000000)]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Basic salary must be a positive value")]
         public decimal BASICSALARY { get; set; }
 
-        [Required(ErrorMessage = "Hra is required")]
+        [Required(ErrorMessage = "HRA is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "HRA must be a positive value")]
         public decimal HRA { get; set; }
 
-        [Required(ErrorMessage = "Da is required")]
+        [Required(ErrorMessage = "DA is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "DA must be a positive value")]
         public decimal DA { get; set; }
 
         [Required(ErrorMessage = "Deduction is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Deduction must be a positive value")]
         public decimal DEDUCTION { get; set; }
     }
 }
