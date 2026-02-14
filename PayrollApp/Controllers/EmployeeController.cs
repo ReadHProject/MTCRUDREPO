@@ -70,5 +70,146 @@ namespace PayrollApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult EmployeeDetails(EmployeeDetailsModel Model)
+        {
+            if (!ModelState.IsValid)
+            {
+                EmployeeNames();
+                return View(Model);
+            }
+
+            try
+            {
+                RegistrationDAL.InsertEmployeeDetails(Model);
+                TempData["SuccessMessage"] = "Employee salary details added successfully!";
+            }
+            catch (SqlException ex)
+            {
+                ModelState.AddModelError("", "Database Error: " + ex.Message);
+                EmployeeNames();
+                return View(Model);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "System Error: " + ex.Message);
+                EmployeeNames();
+                return View(Model);
+            }
+            return RedirectToAction("EmployeeDetails");
+        }
+
+        public ActionResult SalaryReport()
+        {
+            // Get employee names for dropdown
+            DataTable dt = RegistrationDAL.GetEmployeeNames();
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Value = "", Text = "-- Select Employee --" });
+
+            foreach (DataRow row in dt.Rows)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = row["EMPID"].ToString(),
+                    Text = row["EMPNAME"].ToString()
+                });
+            }
+
+            ViewBag.EmployeeList = new SelectList(items, "Value", "Text");
+            return View(new SalaryReportFilterModel());
+        }
+
+        [HttpPost]
+        public ActionResult SalaryReport(SalaryReportFilterModel model)
+        {
+            // Get employee names for dropdown
+            DataTable dt = RegistrationDAL.GetEmployeeNames();
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Value = "", Text = "-- Select Employee --" });
+
+            foreach (DataRow row in dt.Rows)
+            {
+                items.Add(new SelectListItem
+                {
+                    Value = row["EMPID"].ToString(),
+                    Text = row["EMPNAME"].ToString()
+                });
+            }
+
+            ViewBag.EmployeeList = new SelectList(items, "Value", "Text", model.SelectedEmployeeId);
+
+            try
+            {
+                // Get salary data based on selection
+                int? empId = model.ShowAllEmployees ? null : model.SelectedEmployeeId;
+                DataTable salaryData = RegistrationDAL.GetEmployeeSalaryReport(empId);
+
+                model.EmployeeSalaries = new List<SalaryReportModel>();
+                foreach (DataRow row in salaryData.Rows)
+                {
+                    var salaryModel = new SalaryReportModel
+                    {
+                        EMPID = Convert.ToInt32(row["EMPID"]),
+                        EMPNAME = row["EMPNAME"].ToString(),
+                        EMPDESIGNATION = row["EMPDESGNATION"].ToString(),
+                        MOBILE = row["MOBILE"].ToString(),
+                        BASICSALARY = Convert.ToDecimal(row["BASICSALARY"]),
+                        HRA = Convert.ToDecimal(row["HRA"]),
+                        DA = Convert.ToDecimal(row["DA"]),
+                        DEDUCTION = Convert.ToDecimal(row["DEDUCTION"])
+                    };
+                    
+                    // Calculate gross and net salary
+                    salaryModel.GROSSSALARY = salaryModel.BASICSALARY + salaryModel.HRA + salaryModel.DA;
+                    salaryModel.NETSALARY = salaryModel.GROSSSALARY - salaryModel.DEDUCTION;
+                    
+                    model.EmployeeSalaries.Add(salaryModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error retrieving salary data: " + ex.Message);
+            }
+
+            return View(model);
+        }
+
+        public ActionResult SalaryReportPDF(int? empId, bool showAll = false)
+        {
+            try
+            {
+                int? employeeId = showAll ? null : empId;
+                DataTable salaryData = RegistrationDAL.GetEmployeeSalaryReport(employeeId);
+
+                var salaryList = new List<SalaryReportModel>();
+                foreach (DataRow row in salaryData.Rows)
+                {
+                    var salaryModel = new SalaryReportModel
+                    {
+                        EMPID = Convert.ToInt32(row["EMPID"]),
+                        EMPNAME = row["EMPNAME"].ToString(),
+                        EMPDESIGNATION = row["EMPDESIGNATION"].ToString(),
+                        MOBILE = row["MOBILE"].ToString(),
+                        BASICSALARY = Convert.ToDecimal(row["BASICSALARY"]),
+                        HRA = Convert.ToDecimal(row["HRA"]),
+                        DA = Convert.ToDecimal(row["DA"]),
+                        DEDUCTION = Convert.ToDecimal(row["DEDUCTION"])
+                    };
+                    
+                    salaryModel.GROSSSALARY = salaryModel.BASICSALARY + salaryModel.HRA + salaryModel.DA;
+                    salaryModel.NETSALARY = salaryModel.GROSSSALARY - salaryModel.DEDUCTION;
+                    
+                    salaryList.Add(salaryModel);
+                }
+
+                return View(salaryList);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error generating PDF report: " + ex.Message;
+                return RedirectToAction("SalaryReport");
+            }
+        }
+
     }
 }

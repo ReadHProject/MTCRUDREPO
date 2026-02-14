@@ -163,6 +163,7 @@
     </Compile>
     <Compile Include="Models\EmployeeDetailsModel.cs" />
     <Compile Include="Models\EmployeeMasterModel.cs" />
+    <Compile Include="Models\SalaryReportModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +199,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Employee\EmployeeMaster.cshtml" />
     <Content Include="Views\Employee\EmployeeDetails.cshtml" />
+    <Content Include="Views\Employee\SalaryReport.cshtml" />
+    <Content Include="Views\Employee\SalaryReportPDF.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

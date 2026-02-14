@@ -13,6 +13,8 @@
     
     <!-- Bootstrap 4 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <style>
@@ -132,6 +134,11 @@
                             <li class="breadcrumb-item active text-white" aria-current="page">Salary Details</li>
                         </ol>
                     </nav>
+                    <div class="mt-2">
+                        <a href="@Url.Action("SalaryReport", "Employee")" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-chart-line"></i> View Salary Report
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

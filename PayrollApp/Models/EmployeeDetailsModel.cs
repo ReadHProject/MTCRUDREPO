@@ -8,7 +8,7 @@ namespace PayrollApp.Models
 {
     public class EmployeeDetailsModel
     {
-        [Required]
+        [Required(ErrorMessage = "Employee is required")]
         public int EMPID { get; set; }
 
         [Required(ErrorMessage = "Basic Salary is required")]
